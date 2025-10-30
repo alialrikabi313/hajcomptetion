@@ -151,13 +151,13 @@ class QuizController extends StateNotifier<QuizState> {
       state = state.copyWith(
         isAnswered: true,
         scoreInLevel: state.scoreInLevel + 1,
-        selectedOptionIndex: selected,
+        selectedOptionIndex: selected != null ? selected - 1 : null,
       );
     } else {
       if (!auto) audio.play(K.sfxWrong);
       state = state.copyWith(
         isAnswered: true,
-        selectedOptionIndex: selected,
+        selectedOptionIndex: selected != null ? selected - 1 : null,
       );
     }
   }

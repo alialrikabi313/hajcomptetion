@@ -130,44 +130,48 @@ class QuestionPage extends ConsumerWidget {
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
                     itemBuilder: (_, i) {
                       final isAnswered = state.isAnswered;
-                      final selected0 = ctrl.selectedOptionIndex; // 0-based من المتحكّم
-                      final correctIndex = q.correctAnswer - 1; // لأننا نخزن 1..3
+                      final selected0 = ctrl.selectedOptionIndex; // 0-based
+                      final correctIndex = q.correctAnswer - 1;   // لأن correctAnswer يبدأ من 1
 
-                      final isCorrect = isAnswered && i == correctIndex;
-                      final isUserWrong =
-                          isAnswered && selected0 != null && i == selected0 && i != correctIndex;
+                      Color bg = const Color(0xFF008C74); // اللون الافتراضي
 
-                      Color bg;
-                      if (!isAnswered) {
-                        bg = const Color(0xFF008C74);
-                      } else if (isCorrect) {
-                        bg = Colors.greenAccent.shade700;
-                      } else if (isUserWrong) {
-                        bg = Colors.redAccent.shade200;
-                      } else {
-                        bg = const Color(0xFF008C74);
+                      if (isAnswered && selected0 != null) {
+                        // ✅ إذا أجاب المستخدم بشكل صحيح
+                        if (selected0 == correctIndex) {
+                          if (i == correctIndex) {
+                            bg = Colors.greenAccent.shade700; // الجواب الصحيح فقط أخضر
+                          }
+                        }
+                        // ❌ إذا أجاب المستخدم بشكل خاطئ
+                        else {
+                          if (i == selected0) {
+                            bg = Colors.redAccent.shade200; // الجواب الذي اختاره المستخدم أحمر
+                          } else if (i == correctIndex) {
+                            bg = Colors.greenAccent.shade700; // الجواب الصحيح أخضر
+                          }
+                        }
                       }
 
                       return GestureDetector(
-                        onTap: isAnswered ? null : () => ctrl.answer(i + 1), // 1-based
+                        onTap: isAnswered ? null : () => ctrl.answer(i + 1),
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
                           decoration: BoxDecoration(
                             color: bg,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: const [
                               BoxShadow(
-                                  color: Colors.black26,
-                                  offset: Offset(0, 3),
-                                  blurRadius: 6)
+                                color: Colors.black26,
+                                offset: Offset(0, 3),
+                                blurRadius: 6,
+                              ),
                             ],
                           ),
                           child: Text(
                             options[i],
                             textAlign: TextAlign.center,
-                            style:  TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
                               fontSize: K.fontsize,
                               fontWeight: FontWeight.w600,

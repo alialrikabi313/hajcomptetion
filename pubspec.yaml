@@ -1,7 +1,7 @@
 name: quiz_levels_clean
 description: "Quiz app with levels, clean architecture, Riverpod, offline JSON, Lottie, SFX."
 publish_to: "none"
-version: 2.0.0+2
+version: 3.0.0+3
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
