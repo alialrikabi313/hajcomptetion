@@ -37,6 +37,7 @@ class ResultPage extends ConsumerWidget {
         child: Scaffold(
           backgroundColor: const Color(0xFF062B4E),
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: const Color(0xFF07395C),
             title: const Text('نتيجة المرحلة'),
             centerTitle: true,
