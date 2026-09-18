@@ -45,6 +45,7 @@ class AudioService {
   }
 
   Future<void> play(String assetPath) async {
+    if (!K.soundEnabled) return;
     await init();
     try {
       if (assetPath == K.sfxCorrect) {

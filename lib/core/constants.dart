@@ -1,19 +1,28 @@
 class K {
-  // الوقت المخصص لكل سؤال (ثوانٍ)
-  static const int secondsPerQuestion = 30;
+  // 📁 ملفات الأسئلة: الأول بمستندات، والثاني أسئلة المراحل القديمة بلا مستند
+  static const String questionsAsset = 'assets/haj_questions.json';
+  static const String levelsQuestionsAsset = 'assets/levels_questions.json';
+  static const List<String> questionAssets = [
+    questionsAsset,
+    levelsQuestionsAsset,
+  ];
 
-  static const double passThreshold = 0.7;
-
-  // أسماء ملفات المؤثرات
+  // 🔊 أسماء ملفات المؤثرات
   static const String sfxCorrect = 'assets/sfx/correct.mp3';
-  static const String sfxWrong   = 'assets/sfx/wrong.mp3';
+  static const String sfxWrong = 'assets/sfx/wrong.mp3';
   static const String sfxLevelUp = 'assets/sfx/level_up.mp3';
 
-  // المتغيرات العامة القابلة للتعديل
-  static int passScore = 15;   // سهل افتراضياً
-  static bool showTimer = true;
-  static double fontsize = 20;
+  // ⚙️ الإعدادات القابلة للتعديل من صفحة الإعدادات
+  static bool showTimer = false;
+  static int secondsPerQuestion = 45;
+  static double fontSize = 19;
+  static bool soundEnabled = true;
 
-  // مسار ملف الأسئلة
-  static const String levelsAsset = 'assets/levels/levels.json';
+  // حدود شريط تمرير حجم الخط
+  static const double minFontSize = 15;
+  static const double maxFontSize = 28;
+
+  // حدود مدة السؤال
+  static const int minSeconds = 15;
+  static const int maxSeconds = 120;
 }

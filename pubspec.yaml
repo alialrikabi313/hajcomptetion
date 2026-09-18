@@ -1,7 +1,7 @@
 name: quiz_levels_clean
 description: "Quiz app with levels, clean architecture, Riverpod, offline JSON, Lottie, SFX."
 publish_to: "none"
-version: 6.0.0+6
+version: 8.4.0+13
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -16,6 +16,9 @@ dependencies:
   shared_preferences:
   animate_do:
   url_launcher:
+  flutter_local_notifications: ^22.3.0
+  timezone: ^0.11.1
+  flutter_timezone: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -32,8 +35,24 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
   assets:
-    - assets/levels/levels.json
+    - assets/haj_questions.json
+    - assets/levels_questions.json
     - assets/lottie/
     - assets/sfx/
     - assets/images/
+  fonts:
+    - family: Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Tajawal-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Tajawal-Bold.ttf
+          weight: 700
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Amiri-Bold.ttf
+          weight: 700
 

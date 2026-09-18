@@ -1,29 +1,43 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../../core/constants.dart';
-import '../models/level_model.dart';
+import '../models/haj_question_model.dart';
 
-/// 🧠 واجهة مصدر الأسئلة المحلي (تقرأ ملف JSON من assets)
+/// 🧠 واجهة مصدر الأسئلة المحلي
 abstract class LocalQuestionsDataSource {
-  /// تحميل جميع المراحل من ملف JSON
-  Future<List<LevelModel>> getLevels();
+  Future<List<HajQuestionModel>> getQuestions();
 }
 
-/// 💾 التطبيق الفعلي لقراءة الملف من الأصول
+/// 💾 قراءة ملفات الأسئلة من الأصول (مرة واحدة ثم تُخزّن مؤقتاً)
+///
+/// الملف الأول: أسئلة مع مستند الجواب.
+/// الملف الثاني: أسئلة المراحل القديمة، بلا مستند.
 class LocalQuestionsDataSourceImpl implements LocalQuestionsDataSource {
+  List<HajQuestionModel>? _cache;
+
   @override
-  Future<List<LevelModel>> getLevels() async {
-    // تحميل النص من ملف JSON المحدد في constants
-    final raw = await rootBundle.loadString(K.levelsAsset);
+  Future<List<HajQuestionModel>> getQuestions() async {
+    if (_cache != null) return _cache!;
 
-    // فكّ الترميز وتحويله إلى خريطة
-    final map = json.decode(raw) as Map<String, dynamic>;
+    final all = <HajQuestionModel>[];
+    for (final asset in K.questionAssets) {
+      all.addAll(await _load(asset));
+    }
+    _cache = all;
+    return _cache!;
+  }
 
-    // تحويل كل عنصر في القائمة إلى LevelModel
-    final levels = (map['levels'] as List)
-        .map((e) => LevelModel.fromMap(e as Map<String, dynamic>))
-        .toList();
-
-    return levels;
+  Future<List<HajQuestionModel>> _load(String asset) async {
+    try {
+      final raw = await rootBundle.loadString(asset);
+      final list = json.decode(raw) as List<dynamic>;
+      return list
+          .map((e) => HajQuestionModel.fromMap(e as Map<String, dynamic>))
+          .where((m) => m.isValid)
+          .toList();
+    } catch (_) {
+      // ملف مفقود أو تالف: لا نُسقط بقية البنك
+      return const [];
+    }
   }
 }
