@@ -52,6 +52,7 @@ def clean(t):
     t = (t or '').translate(PARENS)
     t = t.replace('ک', 'ك').replace('ی', 'ي').replace('ھ', 'ه')
     t = t.replace('هيي', 'هي').replace('ىي', 'ي')
+    t = t.replace('سات رة', 'ساترة')      # كلمة شطرها التنسيق في الأصل
     t = re.sub(r'\s+', ' ', t).strip()
     t = re.sub(r'\s+([،.؟:؛])', r'', t)
     t = re.sub(r'\(\s+', '(', t)
@@ -65,7 +66,10 @@ def clean_ref(raw):
     ln = Line(t)
     m = ORD_RE.search(ln.s)
     if m:
-        t = ln.raw_from(m.end())
+        # «الجواب الصحيح حسب كتاب المناسك هو …» — التقييد جزء من الحكم فيبقى
+        qualifier = ln.s[m.start():m.end()]
+        if 'حسب' not in qualifier:
+            t = ln.raw_from(m.end())
     st = STOP_RE.search(t)
     if st and st.start() > 20:
         t = t[:st.start()]

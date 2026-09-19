@@ -94,10 +94,11 @@ def load_lines(path):
             continue
         if r.get('size', body) < 12.3 and 'الجواب' not in t:
             m = re.match(r'^\)(' + D + r'+)\(\s*(.+)$', t)
-            if m:
+            if m and len(re.sub(r'[\s.،؛:]+', '', m.group(2))) >= 3:
                 foot.append({'page': r['page'], 'num': m.group(1), 'text': m.group(2).strip()})
                 continue
-            m2 = re.match(r'^\)(' + D + r'+)\(\s*$', t)
+            # a marker may carry a stray dot: ")٣(." — still just a marker
+            m2 = re.match(r'^\)(' + D + r'+)\(\s*[.،؛:]*\s*$', t)
             if m2:
                 # a bare footnote marker inline in the question/option text —
                 # keep it so it can still be matched to its footnote below

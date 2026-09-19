@@ -40,16 +40,42 @@ def repeated_of(name):
 YEAR2 = re.compile(r'^في\s*سنة\s*' + D + r'+')
 
 
+MARK_ONLY = re.compile(r'^\)(' + D + r'+)\(\s*[.،؛:]*\s*$')
+MARK_TEXT = re.compile(r'^\)(' + D + r'+)\(\s*(.+)$')
+
+
+def footnotes_of(name):
+    """{(page, num): text} — same rule the extractor uses"""
+    key = ('F', name)
+    if key not in _lines:
+        foot = []
+        for r in lines_of(name):
+            t = r['text'].strip()
+            if r.get('size', 14.0) >= 12.3 or 'الجواب' in t:
+                continue
+            m = MARK_TEXT.match(t)
+            if m and len(re.sub(r'[\s.،؛:]+', '', m.group(2))) >= 3:
+                foot.append({'page': r['page'], 'num': m.group(1),
+                             'text': m.group(2).strip()})
+            elif foot and foot[-1]['page'] == r['page'] and not MARK_ONLY.match(t)                     and not P.is_noise(t) and '/' not in t and '........' not in t:
+                foot[-1]['text'] += ' ' + t
+        _lines[key] = {(f['page'], f['num']): f['text'] for f in foot}
+    return _lines[key]
+
+
 def block_of(name, first_line):
     lines = lines_of(name)
     start = next((k for k, r in enumerate(lines)
                   if r['text'].strip() == first_line.strip()), None)
     if start is None:
         return None
-    out = [lines[start]]
+    out, markers = [lines[start]], []
     for r in lines[start + 1:]:
         t = r['text'].strip()
         if r.get('size', 14.0) < 12.3:
+            mo = MARK_ONLY.match(t)
+            if mo:
+                markers.append((r['page'], mo.group(1)))
             continue
         ln = Line(t)
         if Q_START.match(ln.s) or (len(t) > 25 and ALT_START.match(ln.s)):
@@ -59,6 +85,10 @@ def block_of(name, first_line):
         if P.is_noise(t) or t in repeated_of(name):
             continue
         out.append(r)
+    notes = footnotes_of(name)
+    for key in markers:
+        if key in notes:
+            out.append({'page': key[0], 'y': 999, 'size': 14.0, 'text': notes[key]})
     return out
 
 
